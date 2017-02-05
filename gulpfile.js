@@ -5,6 +5,7 @@ const babel = require("gulp-babel");
 const sourcemaps = require('gulp-sourcemaps');
 const del = require('del');
 const exec = require('child_process').exec;
+const sass = require('gulp-sass');
 
 let appDir = 'dist';
 
@@ -18,7 +19,7 @@ gulp.task('build-html', function() {
 });
 
 gulp.task('build-css', function() {
-  return copyFiles('src/**/*.css', appDir);
+  return processSass('src/**/*.scss', appDir);
 });
 
 gulp.task('copy-libraries', function() {
@@ -45,6 +46,12 @@ function processJavascript(source, destination) { //, isProduction) {
       exec('say '+e.name); // says the error name
     })
     .pipe(sourcemaps.write())
+    .pipe(gulp.dest(destination));
+}
+
+function processSass(source, destination) {
+  return gulp.src(source)
+    .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest(destination));
 }
 
